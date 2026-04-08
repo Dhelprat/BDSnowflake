@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: bd_lab1_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: bd_lab1
+      POSTGRES_USER: bd_user
+      POSTGRES_PASSWORD: bd_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./sql/ddl/01_create_staging.sql:/docker-entrypoint-initdb.d/01_create_staging.sql:ro
+      - ./sql/dml/02_load_staging.sql:/docker-entrypoint-initdb.d/02_load_staging.sql:ro
+      - ./sql/ddl/03_create_dw_schema.sql:/docker-entrypoint-initdb.d/03_create_dw_schema.sql:ro
+      - ./sql/dml/04_populate_dw.sql:/docker-entrypoint-initdb.d/04_populate_dw.sql:ro
+      - ./sql/dml/05_validation.sql:/docker-entrypoint-initdb.d/05_validation.sql:ro
+      - ./исходные данные:/data:ro
+      - pgdata_bd_lab1:/var/lib/postgresql/data
+
+volumes:
+  pgdata_bd_lab1:
